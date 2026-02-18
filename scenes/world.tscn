@@ -1,0 +1,71 @@
+[gd_scene load_steps=9 format=3 uid="uid://cpd1ed4op7ud5"]
+
+[ext_resource type="PackedScene" uid="uid://uva54qh33egx" path="res://scenes/pickup_object.tscn" id="2_rwgxs"]
+[ext_resource type="Texture2D" uid="uid://na1q6kp6woyl" path="res://sprites/hole.png" id="3_4wyf3"]
+[ext_resource type="Texture2D" uid="uid://bg1i0jy064rto" path="res://sprites/pickup_house.png" id="4_71j4m"]
+[ext_resource type="Texture2D" uid="uid://cp5jw5dwwuafo" path="res://sprites/car.png" id="4_i7141"]
+[ext_resource type="Texture2D" uid="uid://c5rsa5apado34" path="res://sprites/pickup1.png" id="4_k0juu"]
+[ext_resource type="Script" uid="uid://hp5nw1aomxfu" path="res://scenes/hole.gd" id="4_qfnet"]
+[ext_resource type="PackedScene" uid="uid://dmon7nqok6vau" path="res://scenes/background.tscn" id="6_qfnet"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_i7141"]
+radius = 33.54102
+
+[node name="World" type="Node2D"]
+
+[node name="PickupObject" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(97, -6)
+sprite_texture = ExtResource("4_k0juu")
+weight = 2
+
+[node name="PickupObject4" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(132, -5)
+sprite_texture = ExtResource("4_k0juu")
+weight = 2
+
+[node name="PickupObject5" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(112, -31)
+sprite_texture = ExtResource("4_k0juu")
+weight = 2
+
+[node name="PickupObject2" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(-40, -44)
+sprite_texture = ExtResource("4_71j4m")
+weight = 50
+
+[node name="PickupObject6" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(28, -44)
+sprite_texture = ExtResource("4_71j4m")
+weight = 50
+
+[node name="PickupObject3" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(-109, -45)
+sprite_texture = ExtResource("4_71j4m")
+weight = 50
+
+[node name="PickupObject7" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(106, 103)
+sprite_texture = ExtResource("4_i7141")
+
+[node name="PickupObject8" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(39, 120)
+sprite_texture = ExtResource("4_i7141")
+
+[node name="PickupObject9" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(-11, 86)
+sprite_texture = ExtResource("4_i7141")
+
+[node name="PickupObject10" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(48, 84)
+sprite_texture = ExtResource("4_i7141")
+
+[node name="Hole" type="Area2D" parent="." groups=["hole"]]
+script = ExtResource("4_qfnet")
+
+[node name="Sprite2D" type="Sprite2D" parent="Hole"]
+texture = ExtResource("3_4wyf3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hole"]
+shape = SubResource("CircleShape2D_i7141")
+
+[node name="CanvasLayer" parent="." instance=ExtResource("6_qfnet")]

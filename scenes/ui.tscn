@@ -1,0 +1,63 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtqaw45qxx5hd"]
+
+[ext_resource type="Script" uid="uid://bjmsvkkx8qmo0" path="res://scenes/ui.gd" id="1_nt7q6"]
+[ext_resource type="Texture2D" uid="uid://cx1xyuafok0j5" path="res://sprites/portrait/portrait_neutral.png" id="2_x4jx1"]
+
+[sub_resource type="Theme" id="Theme_x4jx1"]
+Label/colors/font_color = Color(0, 0, 0, 1)
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_nt7q6")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_x4jx1")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -185.0
+offset_top = -293.0
+offset_right = -100.0
+offset_bottom = -243.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="LabelCapacity" type="Label" parent="Control/VBoxContainer"]
+layout_mode = 2
+text = "Capacity: X"
+
+[node name="LabelLoad" type="Label" parent="Control/VBoxContainer"]
+layout_mode = 2
+text = "Load: X"
+
+[node name="Portrait" type="TextureRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -232.99988
+offset_top = -220.0
+offset_right = -193.0
+offset_bottom = -180.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(5, 5)
+texture = ExtResource("2_x4jx1")
+
+[node name="Timer" type="Timer" parent="Control/Portrait"]
+wait_time = 0.5
+autostart = true
+
+[connection signal="timeout" from="Control/Portrait/Timer" to="." method="_on_timer_timeout"]
