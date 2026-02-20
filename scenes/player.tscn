@@ -1,15 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://jjvndh8sm5vn"]
+[gd_scene load_steps=7 format=3 uid="uid://jjvndh8sm5vn"]
 
 [ext_resource type="Script" uid="uid://4w82xytka0b3" path="res://player.gd" id="1_g2els"]
 [ext_resource type="Texture2D" uid="uid://ua6aqx5t13ho" path="res://sprites/char1.png" id="2_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://cq8dogrctgiqb" path="res://audio/79671__joedeshon__slide-whistle-down-01.wav" id="3_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://2asg1cvjme3p" path="res://audio/footsteps.ogg" id="4_dqkch"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k0juu"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_71j4m"]
-radius = 20.024984
+radius = 20.025
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("pickup_point")]
-z_index = 1
 y_sort_enabled = true
 script = ExtResource("1_g2els")
 pickup_point = NodePath("PickupPoint")
@@ -21,7 +22,9 @@ texture = ExtResource("2_qhqgy")
 shape = SubResource("CircleShape2D_k0juu")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, 2)
 zoom = Vector2(2, 2)
+process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 
@@ -32,3 +35,11 @@ position = Vector2(0, -13)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PickupRange"]
 shape = SubResource("CircleShape2D_71j4m")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_qhqgy")
+volume_db = -10.0
+
+[node name="footsteps" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_dqkch")
+volume_db = -10.0

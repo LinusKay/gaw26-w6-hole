@@ -1,11 +1,17 @@
 extends CharacterBody2D
 
-@export var speed = 200
+signal speech(words: String)
+signal youdoneit
+var alldone: bool = false
+
+@export var speed = 300
 @export var pickup_point: Node2D
 
 
 @onready var pickup_range: Area2D = $PickupRange
 @onready var pickup_collision: CollisionShape2D = $PickupRange/CollisionShape2D
+@onready var audio_stream_player: AudioStreamPlayer = $AudioStreamPlayer
+@onready var footsteps: AudioStreamPlayer = $footsteps
 
 var sprite_normal: CompressedTexture2D = preload("res://sprites/char1.png")
 var sprite_carry: Array[CompressedTexture2D] = [
@@ -14,19 +20,27 @@ var sprite_carry: Array[CompressedTexture2D] = [
 	preload("res://sprites/char1_carry3.png")
 ]
 
-var weight_capacity: int = 5
+var weight_capacity: int = 2
 
 var held_object: PickUpObject
 var held_objects: Array[PickUpObject]
 
+var holed_objects: Array[PickUpObject] = []
+
 func get_input():
 	var input_direction = Input.get_vector("left", "right", "up", "down")
 	velocity = input_direction * speed
+	if input_direction:
+		if not footsteps.playing:
+			footsteps.play()
+	else:
+		footsteps.stop()
 
 func _physics_process(_delta):
 	get_input()
 	move_and_slide()
 	_update_carry_positions()
+
 	
 	if held_objects.size() > 0:
 		if $Sprite2D.texture == sprite_normal:
@@ -48,6 +62,7 @@ func _pickup() -> void:
 	var pickup_object = _get_closest_pickup()
 	if pickup_object:
 		pickup_object.held = true
+		pickup_object.play_sound()
 		held_objects.append(pickup_object)
 		print("i am now holding " + str(get_current_weight()))
 
@@ -60,7 +75,20 @@ func _drop() -> void:
 				for object in held_objects:
 					object.held = false
 					object.throwing = true
+					var already_holed: bool = false
+					for hobject in holed_objects:
+						if object.sprite_texture.load_path == hobject.sprite_texture.load_path:
+							already_holed = true
+					if not already_holed:
+						holed_objects.append(object.duplicate())
 				held_objects.clear()
+				audio_stream_player.pitch_scale = randf_range(0.8,1.2)
+				audio_stream_player.play()
+				holed_objects.sort_custom(func(a, b): return a.weight > b.weight)
+				
+				UiHoledObjects.update_objects()
+				
+				
 				return
 		held_objects[0].held = false
 		held_objects.pop_front()
@@ -98,6 +126,7 @@ func _get_closest_pickup() -> PickUpObject:
 			if not pickup_object.held:
 				if _calc_would_overweight(pickup_object.weight):
 					print("object too big i cannot pick htis up")
+					speech.emit("this too big i cannot pick htis up")
 					continue
 				if not target_object:
 					target_object = pickup_object

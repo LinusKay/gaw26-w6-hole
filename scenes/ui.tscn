@@ -1,10 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://dtqaw45qxx5hd"]
+[gd_scene load_steps=11 format=3 uid="uid://dtqaw45qxx5hd"]
 
 [ext_resource type="Script" uid="uid://bjmsvkkx8qmo0" path="res://scenes/ui.gd" id="1_nt7q6"]
 [ext_resource type="Texture2D" uid="uid://cx1xyuafok0j5" path="res://sprites/portrait/portrait_neutral.png" id="2_x4jx1"]
+[ext_resource type="Texture2D" uid="uid://na1q6kp6woyl" path="res://sprites/hole.png" id="3_yev5y"]
+[ext_resource type="Script" uid="uid://c2ln6ha4pfx0a" path="res://scenes/speech_label.gd" id="4_gdt2y"]
+[ext_resource type="Texture2D" uid="uid://cuj7pbyd4k6sv" path="res://sprites/point.png" id="5_wm3ai"]
+[ext_resource type="Texture2D" uid="uid://cu3o0fk2e2rsc" path="res://sprites/youdoneit.png" id="6_8dubc"]
+[ext_resource type="AudioStream" uid="uid://yywga6hak6cn" path="res://audio/foghorn.ogg" id="6_ktti3"]
+[ext_resource type="AudioStream" uid="uid://csknwlefunog4" path="res://audio/Face Slap Sound Effect.ogg" id="7_p7vwb"]
 
 [sub_resource type="Theme" id="Theme_x4jx1"]
 Label/colors/font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_yev5y"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_nt7q6")
@@ -25,20 +33,28 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -185.0
-offset_top = -293.0
-offset_right = -100.0
-offset_bottom = -243.0
+offset_left = -175.0
+offset_top = -307.0
+offset_right = -25.0
+offset_bottom = -247.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="LabelCapacity" type="Label" parent="Control/VBoxContainer"]
+[node name="LabelCapacity" type="RichTextLabel" parent="Control/VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/normal_font_size = 20
 text = "Capacity: X"
+fit_content = true
 
-[node name="LabelLoad" type="Label" parent="Control/VBoxContainer"]
+[node name="LabelLoad" type="RichTextLabel" parent="Control/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/normal_font_size = 20
 text = "Load: X"
+fit_content = true
 
 [node name="Portrait" type="TextureRect" parent="Control"]
 layout_mode = 1
@@ -60,4 +76,112 @@ texture = ExtResource("2_x4jx1")
 wait_time = 0.5
 autostart = true
 
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 1
+offset_left = 4.9999995
+offset_top = -20.999998
+offset_right = 45.0
+offset_bottom = 19.000002
+scale = Vector2(5, 5)
+texture = ExtResource("3_yev5y")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 133.0
+offset_right = 230.0
+offset_bottom = 173.0
+theme = SubResource("Theme_yev5y")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+bbcode_enabled = true
+text = "[wave]throw things in me dawg[/wave]"
+fit_content = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Control"]
+layout_mode = 1
+offset_left = 233.0
+offset_top = 66.0
+offset_right = 428.0
+offset_bottom = 132.0
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/normal_font_size = 20
+text = "e: pick up
+x: drop"
+
+[node name="SpeechLabel" type="RichTextLabel" parent="Control"]
+modulate = Color(1, 1, 1, 0)
+z_index = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -328.0
+offset_top = -20.0
+offset_right = 328.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "this too big i cannot pick htis up"
+horizontal_alignment = 1
+script = ExtResource("4_gdt2y")
+
+[node name="SpeechTimer" type="Timer" parent="Control/SpeechLabel"]
+wait_time = 2.0
+one_shot = true
+
+[node name="Point" type="TextureRect" parent="Control"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -644.0
+offset_top = -616.0
+offset_right = -186.81519
+offset_bottom = -265.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("5_wm3ai")
+
+[node name="foghornaudio" type="AudioStreamPlayer" parent="Control/Point"]
+stream = ExtResource("6_ktti3")
+
+[node name="youdoneit" type="TextureRect" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -376.0
+offset_top = -127.0
+offset_right = 81.184814
+offset_bottom = 224.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_8dubc")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/youdoneit"]
+layout_mode = 0
+offset_left = -59.0
+offset_top = -20.0
+offset_right = 423.0
+offset_bottom = 20.0
+bbcode_enabled = true
+text = "[wave]THATS IT THERES NOTHING ELSE
+WELLL DONE[/wave]"
+
+[node name="youdoneitaudio" type="AudioStreamPlayer" parent="Control/youdoneit"]
+stream = ExtResource("7_p7vwb")
+
 [connection signal="timeout" from="Control/Portrait/Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="Control/SpeechLabel/SpeechTimer" to="Control/SpeechLabel" method="_on_speech_timer_timeout"]
