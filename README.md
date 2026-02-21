@@ -16,7 +16,7 @@
 
 ## Game: hole?
 
-![game showcase img](readme/Screenshot_2026-02-21_151038.png)
+![game showcase img](readme/splash.png)
 
 For week 6 I created a Katamari Damacy style throw-things-down-a-hole power-scaling object collection game. The more you pick up and throw, the more you can pick up. What's in the hole? How's this fella so strong? Why's the tilemap so small and empty? Maybe I'll kick your ass, chump.
 
@@ -26,6 +26,8 @@ I ended up putting myself on a stupid time-crunch with this one, with only rough
 Despite how dodgy the game looks I think its quite charming. It also afforded me a lot of time, since I could comfortably blast out assets as needed in a few seconds. I reused a bunch of assets from other games ([1](https://umconfortable.itch.io/what), [2](https://umconfortable.itch.io/disco)), which I don't do super often. 
 
 The UI is odd. I still dont know much about UI, but its servicable. I personally love the obnoxious UI popups when an object is too heavy to pick up, as well as when you finish the game. The images are stupidly big and uncomfortably placed. The idea of the character pointing you to the statistics on screen, almost judgementally, makes me laugh. 
+
+The character is orange in two textures. this is not canon.
 
 ![game showcase img](readme/Screenshot_2026-02-21_152352.png)
 
