@@ -5,8 +5,11 @@ var fading: bool = false
 @onready var point: TextureRect = $"../Point"
 @onready var foghornaudio: AudioStreamPlayer = $"../Point/foghornaudio"
 
+var player
+
 func _ready() -> void:
-	Player.speech.connect(speech)
+	player = get_tree().get_first_node_in_group("player")
+	player.speech.connect(speech)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:

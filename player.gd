@@ -7,6 +7,7 @@ var alldone: bool = false
 @export var speed = 300
 @export var pickup_point: Node2D
 
+@onready var camera_2d: Camera2D = $Camera2D
 
 @onready var pickup_range: Area2D = $PickupRange
 @onready var pickup_collision: CollisionShape2D = $PickupRange/CollisionShape2D
@@ -26,7 +27,7 @@ var sprite_carry: Array[CompressedTexture2D] = [
 ]
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
-var weight_capacity: int = 2
+var weight_capacity: int = 2000
 
 var held_object: PickUpObject
 var held_objects: Array[PickUpObject]
@@ -41,11 +42,15 @@ var music
 
 var cannot_just_drop: bool = false
 
+var desired_camera_zoom: float = 2.0
+
 func _ready() -> void:
 	await get_tree().process_frame
 	hole = get_tree().get_first_node_in_group("hole")
 	credit = get_tree().get_first_node_in_group("credit")
 	music = get_tree().get_first_node_in_group("music")
+	var playerspawn = get_tree().get_first_node_in_group("playerspawn")
+	global_position = playerspawn.global_position
 
 func get_input():
 	var input_direction = Input.get_vector("left", "right", "up", "down")
@@ -83,7 +88,9 @@ func _physics_process(_delta):
 				if credit.modulate.a < 1:
 					credit.modulate.a += 0.01
 					music.volume_db -= 0.01
-					
+	
+	camera_2d.zoom.x = lerp(camera_2d.zoom.x, desired_camera_zoom, 0.1)
+	camera_2d.zoom.y = lerp(camera_2d.zoom.y, desired_camera_zoom, 0.1)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -91,8 +98,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_pickup()
 	if event.is_action_pressed("drop"):
 		_drop()
-	if event.is_action_pressed("restart"):
-		get_tree().reload_current_scene()
+	#if event.is_action_pressed("restart"):
+		#get_tree().reload_current_scene()
 		
 
 func _pickup() -> void:
@@ -103,6 +110,7 @@ func _pickup() -> void:
 			pickup_object.held = true
 			pickup_object.play_sound()
 			held_objects.append(pickup_object)
+			desired_camera_zoom = clamp(2.0 - (0.1 * held_objects.size()), 0.3, 2.0)
 			print("i am now holding " + str(get_current_weight()))
 	elif total_pickups == 1:
 		cannot_just_drop = true
@@ -156,12 +164,14 @@ func _drop() -> void:
 				audio_stream_player.pitch_scale = randf_range(0.8,1.2)
 				audio_stream_player.play()
 				holed_objects.sort_custom(func(a, b): return a.weight > b.weight)
-				
+				desired_camera_zoom = 2.0
 				UiHoledObjects.update_objects()
 				return
 		if not cannot_just_drop:
 			held_objects[0].held = false
 			held_objects.pop_front()
+			desired_camera_zoom = clamp(2.0 - (0.1 * held_objects.size()), 0.3, 2.0)
+			
 	
 		
 

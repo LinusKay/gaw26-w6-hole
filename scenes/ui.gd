@@ -20,21 +20,25 @@ extends CanvasLayer
 	preload("res://sprites/portrait/portrait_nerd.png"),
 ]
 
+var player
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	Player.youdoneit.connect(youdoneit)
+	player = get_tree().get_first_node_in_group("player")
+	player.youdoneit.connect(youdoneit)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	label_capacity.text = "Power: " + str(Player.weight_capacity)
-	label_load.text = "Load: " + str(Player.get_current_weight())
+	if player:
+		label_capacity.text = "Power: " + str(player.weight_capacity)
+		label_load.text = "Load: " + str(player.get_current_weight())
 
 
 func _on_timer_timeout() -> void:
 	portrait.texture = portraits.pick_random()
 
 func youdoneit() -> void:
-	if not Player.alldone:
+	if not player.alldone:
 		texyoudoneit.show()
 		youdoneitaudio.play()

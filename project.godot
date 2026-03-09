@@ -17,9 +17,12 @@ config/icon="uid://na1q6kp6woyl"
 
 [autoload]
 
-Player="*res://scenes/player.tscn"
 Ui="*res://scenes/ui.tscn"
 UiHoledObjects="*res://scenes/ui_holed_objects.tscn"
+
+[display]
+
+window/stretch/mode="viewport"
 
 [global_group]
 
@@ -28,6 +31,8 @@ pickup=""
 background=""
 music=""
 credit=""
+playerspawn=""
+player=""
 
 [input]
 
