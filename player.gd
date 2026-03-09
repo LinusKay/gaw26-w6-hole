@@ -13,12 +13,18 @@ var alldone: bool = false
 @onready var audio_stream_player: AudioStreamPlayer = $AudioStreamPlayer
 @onready var footsteps: AudioStreamPlayer = $footsteps
 
+@onready var scene_pickup: PackedScene = preload("res://scenes/pickup_object.tscn")
+var world_holed: bool = false
+var ui_holed: bool = false
+var player_holed: bool = false
+
 var sprite_normal: CompressedTexture2D = preload("res://sprites/char1.png")
 var sprite_carry: Array[CompressedTexture2D] = [
 	preload("res://sprites/char1_carry.png"),
 	preload("res://sprites/char1_carry2.png"),
 	preload("res://sprites/char1_carry3.png")
 ]
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var weight_capacity: int = 2
 
@@ -26,6 +32,20 @@ var held_object: PickUpObject
 var held_objects: Array[PickUpObject]
 
 var holed_objects: Array[PickUpObject] = []
+
+var accept_input: bool = true
+var goodbye: bool = false
+var hole
+var credit
+var music
+
+var cannot_just_drop: bool = false
+
+func _ready() -> void:
+	await get_tree().process_frame
+	hole = get_tree().get_first_node_in_group("hole")
+	credit = get_tree().get_first_node_in_group("credit")
+	music = get_tree().get_first_node_in_group("music")
 
 func get_input():
 	var input_direction = Input.get_vector("left", "right", "up", "down")
@@ -37,18 +57,33 @@ func get_input():
 		footsteps.stop()
 
 func _physics_process(_delta):
-	get_input()
-	move_and_slide()
+	if accept_input:
+		get_input()
+		move_and_slide()
 	_update_carry_positions()
 
-	
-	if held_objects.size() > 0:
-		if $Sprite2D.texture == sprite_normal:
-			$Sprite2D.texture = sprite_carry[0]
-			sprite_carry.append(sprite_carry[0])
-			sprite_carry.pop_front()
+	if not goodbye:
+		if held_objects.size() > 0:
+			if $Sprite2D.texture == sprite_normal:
+				$Sprite2D.texture = sprite_carry[0]
+				sprite_carry.append(sprite_carry[0])
+				sprite_carry.pop_front()
+		else:
+			$Sprite2D.texture = sprite_normal
 	else:
-		$Sprite2D.texture = sprite_normal
+		global_position = lerp(global_position, hole.global_position, .003)
+		scale.x = lerp(scale.x, 0.0, 0.003)
+		scale.y = lerp(scale.y, 0.0, 0.003)
+		print(scale.x)
+		if scale.x < 0.2:
+			print(hole.scale.x)
+			hole.scale.x = lerp(hole.scale.x, 20.0, 0.002)
+			hole.scale.y = lerp(hole.scale.y, 20.0, 0.002)
+			if hole.scale.x > 10.0:
+				if credit.modulate.a < 1:
+					credit.modulate.a += 0.01
+					music.volume_db -= 0.01
+					
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -56,16 +91,52 @@ func _unhandled_input(event: InputEvent) -> void:
 		_pickup()
 	if event.is_action_pressed("drop"):
 		_drop()
+	if event.is_action_pressed("restart"):
+		get_tree().reload_current_scene()
 		
 
 func _pickup() -> void:
-	var pickup_object = _get_closest_pickup()
-	if pickup_object:
-		pickup_object.held = true
-		pickup_object.play_sound()
-		held_objects.append(pickup_object)
-		print("i am now holding " + str(get_current_weight()))
-
+	var total_pickups = _get_total_pickups()
+	if total_pickups > 1:
+		var pickup_object = _get_closest_pickup()
+		if pickup_object:
+			pickup_object.held = true
+			pickup_object.play_sound()
+			held_objects.append(pickup_object)
+			print("i am now holding " + str(get_current_weight()))
+	elif total_pickups == 1:
+		cannot_just_drop = true
+		#pick up da eart	
+		if not world_holed:		
+			var tilemaplayer: TileMapLayer = get_tree().current_scene.get_node("TileMapLayer")
+			tilemaplayer.queue_free()
+			var pickup_object: PickUpObject = scene_pickup.instantiate()
+			pickup_object.sprite_texture = load("res://sprites/daeart.png")
+			pickup_object.sound_pickup = load("res://audio/freesound_community-rock-destroy-6409.mp3")
+			get_tree().current_scene.add_child(pickup_object)
+			pickup_object.play_sound()
+			held_objects.append(pickup_object)
+			world_holed = true
+	else:
+		cannot_just_drop = true
+		#pick up da ui
+		if not ui_holed:
+			Ui.hide()
+			get_tree().get_first_node_in_group("background").hide()
+			var pickup_object: PickUpObject = scene_pickup.instantiate()
+			pickup_object.sprite_texture = load("res://sprites/dagame.png")
+			pickup_object.sound_pickup = load("res://audio/freesound_community-rock-destroy-6409.mp3")
+			get_tree().current_scene.add_child(pickup_object)
+			pickup_object.play_sound()
+			held_objects.append(pickup_object)
+			ui_holed = true
+		else:
+			if not player_holed:
+				accept_input = false
+				goodbye = true
+				animation_player.play("wave")
+				music.stream = load("res://audio/outro.mp3")
+				music.play()
 
 func _drop() -> void:
 	if held_objects.size() > 0:
@@ -87,11 +158,10 @@ func _drop() -> void:
 				holed_objects.sort_custom(func(a, b): return a.weight > b.weight)
 				
 				UiHoledObjects.update_objects()
-				
-				
 				return
-		held_objects[0].held = false
-		held_objects.pop_front()
+		if not cannot_just_drop:
+			held_objects[0].held = false
+			held_objects.pop_front()
 	
 		
 
@@ -134,3 +204,7 @@ func _get_closest_pickup() -> PickUpObject:
 				if position.distance_to(pickup_object.position) < position.distance_to(target_object.position):
 					target_object = pickup_object
 	return target_object
+
+
+func _get_total_pickups() -> int:
+	return get_tree().get_node_count_in_group("pickup")

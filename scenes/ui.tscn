@@ -106,8 +106,8 @@ offset_right = 428.0
 offset_bottom = 132.0
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/normal_font_size = 20
-text = "e: pick up
-x: drop"
+text = "E: pick up
+Q: drop"
 
 [node name="SpeechLabel" type="RichTextLabel" parent="Control"]
 modulate = Color(1, 1, 1, 0)
@@ -153,6 +153,8 @@ texture = ExtResource("5_wm3ai")
 
 [node name="foghornaudio" type="AudioStreamPlayer" parent="Control/Point"]
 stream = ExtResource("6_ktti3")
+volume_db = -10.0
+bus = &"sfx"
 
 [node name="youdoneit" type="TextureRect" parent="Control"]
 visible = false
@@ -172,16 +174,30 @@ texture = ExtResource("6_8dubc")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/youdoneit"]
 layout_mode = 0
-offset_left = -59.0
-offset_top = -20.0
-offset_right = 423.0
-offset_bottom = 20.0
+offset_left = -64.0
+offset_top = 9.0
+offset_right = 418.0
+offset_bottom = 87.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
 bbcode_enabled = true
 text = "[wave]THATS IT THERES NOTHING ELSE
 WELLL DONE[/wave]"
 
+[node name="RichTextLabel2" type="RichTextLabel" parent="Control/youdoneit"]
+layout_mode = 0
+offset_left = -130.0
+offset_top = 74.0
+offset_right = 94.0
+offset_bottom = 141.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+bbcode_enabled = true
+text = "[wave]CLOSE THE GAME AND LET YOUR FRIEND PLAY[/wave]"
+
 [node name="youdoneitaudio" type="AudioStreamPlayer" parent="Control/youdoneit"]
 stream = ExtResource("7_p7vwb")
+bus = &"sfx"
 
 [connection signal="timeout" from="Control/Portrait/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Control/SpeechLabel/SpeechTimer" to="Control/SpeechLabel" method="_on_speech_timer_timeout"]

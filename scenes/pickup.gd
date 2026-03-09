@@ -23,7 +23,7 @@ func _ready() -> void:
 	$Sprite.offset.x = -$Sprite.get_rect().size.x/2
 	$Sprite.offset.y = -$Sprite.get_rect().size.y
 
-
+	
 func _physics_process(delta: float) -> void:
 	$WeightLabel.text = str(weight)
 	$Sprite.texture = sprite_texture
@@ -37,13 +37,14 @@ func _physics_process(delta: float) -> void:
 		scale.x = lerp(scale.x, 0.0, 0.1)
 		scale.y = lerp(scale.y, 0.0, 0.1)
 		remove_from_group("pickup")
-		print(get_tree().get_nodes_in_group("pickup").size())
+		
 		if get_tree().get_nodes_in_group("pickup").size() == 0:
 			Player.youdoneit.emit()
 			Player.alldone = true
 		if scale.x <= 0.2:
 			Player.weight_capacity += weight
 			queue_free()
+			print("freed")
 		
 func play_sound() -> void:
 	if audio_stream_player_2d.stream:
